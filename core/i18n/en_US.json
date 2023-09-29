@@ -1,0 +1,29 @@
+{
+    "plugins\/elevenlabs\/core\/ajax\/elevenlabs.ajax.php": {
+        "401 - Accès non autorisé": "401 - Unauthorized access",
+        "Aucune méthode correspondante à": "No method corresponding to"
+    },
+    "plugins\/elevenlabs\/desktop\/modal\/modal.elevenlabs.php": {
+        "401 - Accès non autorisé": "401 - Unauthorized access"
+    },
+    "plugins\/elevenlabs\/desktop\/php\/elevenlabs.php": {
+        "401 - Accès non autorisé": "401 - Unauthorized access",
+        "Ce plugin n\\'utilise pas d\\'équipement": "This plugin does not use any equipment",
+        "Community": "Community",
+        "Configuration": "Configuration",
+        "Créer un post Community": "Create a Community post",
+        "Gestion": "Management"
+    },
+    "plugins\/elevenlabs\/plugin_info\/configuration.php": {
+        "Bonjour, je suis le texte de test.": "Hello, I'm following the test text.",
+        "Clé d'api elevenlabs": "Elevenlabs api key",
+        "Durée de vie du cache": "Cache lifetime",
+        "Tester": "Test",
+        "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Please save the api key before selecting the voice.",
+        "Voix": "Voice"
+    },
+    "traduitjdm": {
+        "timestamp": "2023-09-30 00:00:44",
+        "version": "1.1.0"
+    }
+}
