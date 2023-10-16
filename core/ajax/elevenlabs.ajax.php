@@ -32,12 +32,19 @@ try {
     En V4 : autoriser l'exécution d'une méthode 'action' en GET en indiquant le(s) nom(s) de(s) action(s) dans un tableau en argument
   */
     ajax::init();
+
    if (init('action') == 'getSample') {
-        //ajax::success("lool");
-      
-        $file = Elevenlabs::getMp3(init('text'),init('voiceId'));
-        ajax::success($file);
-    }
+      //ajax::success("lool");
+    
+      $file = Elevenlabs::getMp3(init('text'),init('voiceId'),init('stability') / 100,init('clarity') / 100 );
+      ajax::success($file);
+   }
+    // }else if (init('action') == 'save') {
+    //   //ajax::success("lool");
+    
+    //   $file = Elevenlabs::getMp3(init('text'),init('voiceId'),init('stability') / 100,init('clarity') / 100 );
+    //   ajax::success($file);
+    // }
 
 
     //throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));

@@ -21,19 +21,18 @@ require_once __DIR__ . "/../php/elevenlabs.inc.php";
 
 class Elevenlabs extends eqLogic {
 
-  public static $MP3_SYSTEM_PATH = __DIR__ . '/../../data/';
-  public static $MP3_PLUGIN_PATH = '/plugins/elevenlabs/data/';
-
   /*     * *************************Attributs****************************** */
   public static function tts($_filename,$_text) {
     try {
       $voice = config::byKey("voice","elevenlabs");
+      $clarity = config::byKey("clarity","elevenlabs",0.5);
+      $stability = config::byKey("stability","elevenlabs",0.75);
       log::add('elevenlabs', 'debug', 'input text : ' .$_text);      
       log::add('elevenlabs', 'debug', 'voice :  ' .$voice);
 
-      $file = Elevenlabs::getMp3($_text,$voice);
+      $file = ElevenlabsConstant::getMp3($_text,$voice,$stability,$clarity);
       if(!Helpers::isNotNullOrEmpty($file)){
-        $path = Elevenlabs::$MP3_SYSTEM_PATH.basename($file);
+        $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
         log::add('elevenlabs', 'debug', 'copy' .$path. ' to '.$file);
         copy($path,$_filename);
       }
@@ -46,7 +45,7 @@ class Elevenlabs extends eqLogic {
   public static function getVoice() {
     
       $apiKey = config::byKey("apiKey","elevenlabs");
-      $url = "https://api.elevenlabs.io/v1/voices";   
+      $url = ElevenlabsConstant::$BASEAPI_URL.ElevenlabsConstant::$VOICES_API;   
       //query a get request to elevenlabs with curl
       $ch = curl_init();     
       curl_setopt($ch, CURLOPT_URL, $url);
@@ -62,7 +61,7 @@ class Elevenlabs extends eqLogic {
       return json_decode($result);
   }
   
-  public static function getMp3($text,$voiceId,$stability = 0.5,$similarity_boost =0.5)
+  public static function getMp3($text,$voiceId,$stability = 0.5,$similarity_boost =0.75)
   {
     $apiKey = config::byKey("apiKey","elevenlabs");
     if(Helpers::isNullOrEmpty($apiKey)){
@@ -74,21 +73,21 @@ class Elevenlabs extends eqLogic {
       return;
     }
     
-    if(!file_exists(Elevenlabs::$MP3_SYSTEM_PATH)){
-      mkdir (Elevenlabs::$MP3_SYSTEM_PATH,0755,true);
+    if(!file_exists(ElevenlabsConstant::$MP3_SYSTEM_PATH)){
+      mkdir (ElevenlabsConstant::$MP3_SYSTEM_PATH,0755,true);
     }
-    $filename = $voiceId.'_'.hash('md5', $text).'.mp3';
-    $path = Elevenlabs::$MP3_SYSTEM_PATH.$filename;
+    $filename = $voiceId.'_'.$stability.'_'.$similarity_boost.'_'.hash('md5', $text).'.mp3';
+    $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.$filename;
 
     if(file_exists($path))
     {
       log::add('elevenlabs', 'debug', 'tts : ' .$text. ' existing');
       touch($path, time());
-      return Elevenlabs::$MP3_PLUGIN_PATH.$filename;
+      return ElevenlabsConstant::$MP3_PLUGIN_PATH.$filename;
     }
     log::add('elevenlabs', 'debug', 'tts : ' .$text. ' requested');
-
-    $ch = curl_init('https://api.elevenlabs.io/v1/text-to-speech/'.$voiceId);
+    log::add('elevenlabs', 'debug', 'url : ' .ElevenlabsConstant::$BASEAPI_URL.ElevenlabsConstant::$TTS_API.$voiceId);
+    $ch = curl_init(ElevenlabsConstant::$BASEAPI_URL.ElevenlabsConstant::$TTS_API.$voiceId);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_NOBODY, 0);
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
@@ -113,7 +112,7 @@ class Elevenlabs extends eqLogic {
     if ($status == 200) {
         
         file_put_contents($path, $output);
-        return Elevenlabs::$MP3_PLUGIN_PATH.$filename;
+        return ElevenlabsConstant::$MP3_PLUGIN_PATH.$filename;
     }
     log::add('elevenlabs', 'error', 'status code : '.$status.' message : '.$output);
     return null;
@@ -170,17 +169,17 @@ class Elevenlabs extends eqLogic {
     $intLifeTime = intval($lifeTime);
     if($intLifeTime  >= 1){
       log::add('elevenlabs', 'debug', 'lifetime : '.$lifeTime);
-      $files = scandir(Elevenlabs::$MP3_SYSTEM_PATH);
+      $files = scandir(ElevenlabsConstant::$MP3_SYSTEM_PATH);
       foreach($files as $file) {
         log::add('elevenlabs', 'debug', 'file : '.$file);
         $dateTime = new DateTime();
         $dateTimeFile = new DateTime();
-        $dateTimeFile->setTimestamp(filemtime(Elevenlabs::$MP3_SYSTEM_PATH.$file));
+        $dateTimeFile->setTimestamp(filemtime(ElevenlabsConstant::$MP3_SYSTEM_PATH.$file));
         $interval = $dateTime->diff($dateTimeFile);
         log::add('elevenlabs', 'debug', 'last modification days diff : '.$interval->d);
         if($interval->d >= $intLifeTime){
           log::add('elevenlabs', 'info', 'delete file : '.$file);
-          unlink(Elevenlabs::$MP3_SYSTEM_PATH.$file);
+          unlink(ElevenlabsConstant::$MP3_SYSTEM_PATH.$file);
         }
         //do your work here
       }
@@ -214,6 +213,27 @@ class Elevenlabs extends eqLogic {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
+    $tts = $this->getCmd(null, 'TTS');
+    if (!is_object($tts)) {
+      $tts = new ElevenlabsCmd();
+      $tts->setName(__('TTS', __FILE__));
+    }
+    $tts->setLogicalId('TTS');
+    $tts->setEqLogic_id($this->getId());
+    $tts->setType('action');
+    $tts->setSubType('message');
+    $tts->save();
+  
+    $mp3 = $this->getCmd(null, 'MP3');
+    if (!is_object($mp3)) {
+      $mp3 = new ElevenlabsCmd();
+      $mp3->setName(__('Fichier MP3', __FILE__));
+    }
+    $mp3->setEqLogic_id($this->getId());
+    $mp3->setLogicalId('mp3');
+    $mp3->setType('info');
+    $mp3->setSubType('string');
+    $mp3->save();
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -260,8 +280,12 @@ class Elevenlabs extends eqLogic {
   /*     * **********************Getteur Setteur*************************** */
 
 }
+if (!class_exists('Helpers')) {
+  require_once dirname(__FILE__) . "/../php/helpers.php";
+}
+class ElevenlabsCmd extends cmd {
 
-class templateCmd extends cmd {
+
   /*     * *************************Attributs****************************** */
 
   /*
@@ -282,6 +306,31 @@ class templateCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
+    switch ($this->getLogicalId()) {
+      case 'TTS': //LogicalId de la commande pour charger le TTS
+        $eqlogic = $this->getEqLogic(); //Récupération de l’eqlogic
+        $text = $_options['message'];
+        log::add('elevenlabs', 'debug', 'text : '.  $text);
+        $voice = $eqlogic->getConfiguration('voice');
+        $clarity = $eqlogic->getConfiguration('clarity');
+        $stability = $eqlogic->getConfiguration('stability');   
+        try{ 
+        $file = $eqlogic->getMp3($text,$voice,$stability,$clarity);
+          if(!(!isset($file) || trim($file)===''))
+          {
+            $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
+            log::add('elevenlabs', 'debug', 'set mp3 cmd to '.$file);
+            $mp3Cmd = $eqlogic->getCmd(null, 'MP3');
+            $mp3Cmd->event($file);
+          }else{
+            log::add('elevenlabs', 'error', 'no file generated');
+          }
+        }catch(Exception $e){
+          log::add('elevenlabs', 'error', 'exception tts : ' . $e->getMessage());
+        }
+        
+      break;
+    }
   }
 
   /*     * **********************Getteur Setteur*************************** */
