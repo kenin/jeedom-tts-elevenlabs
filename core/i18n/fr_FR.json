@@ -3,27 +3,85 @@
         "401 - Accès non autorisé": "401 - Accès non autorisé",
         "Aucune méthode correspondante à": "Aucune méthode correspondante à"
     },
+    "plugins\/elevenlabs\/core\/class\/elevenlabs.class.php": {
+        "Fichier MP3": "Fichier MP3",
+        "TTS": "TTS"
+    },
+    "plugins\/elevenlabs\/desktop\/js\/template.js": {
+        "Afficher": "Afficher",
+        "Aucune": "Aucune",
+        "Choisir une icône": "Choisir une icône",
+        "Commande info liée": "Commande info liée",
+        "Historiser": "Historiser",
+        "Inverser": "Inverser",
+        "Max": "Max",
+        "Min": "Min",
+        "Nom de la commande": "Nom de la commande",
+        "Supprimer la commande": "Supprimer la commande",
+        "Unité": "Unité"
+    },
     "plugins\/elevenlabs\/desktop\/modal\/modal.elevenlabs.php": {
+        "401 - Accès non autorisé": "401 - Accès non autorisé"
+    },
+    "plugins\/elevenlabs\/desktop\/modal\/modal.template.php": {
         "401 - Accès non autorisé": "401 - Accès non autorisé"
     },
     "plugins\/elevenlabs\/desktop\/php\/elevenlabs.php": {
         "401 - Accès non autorisé": "401 - Accès non autorisé",
+        "Actions": "Actions",
+        "Activer": "Activer",
+        "Ajouter": "Ajouter",
+        "Ajouter une commande": "Ajouter une commande",
+        "Aucun": "Aucun",
+        "Aucun équipement TTS trouvé, cliquer sur \"Ajouter\" pour commencer": "Aucun équipement TTS trouvé, cliquer sur \"Ajouter\" pour commencer",
+        "Bonjour, je suis le texte de test.": "Bonjour, je suis le texte de test.",
+        "Texte de test": "Texte de test",
+        "Catégorie": "Catégorie",
         "Ce plugin n\\'utilise pas d\\'équipement": "Ce plugin n'utilise pas d'équipement",
+        "Clarté + amélioration de la similarité": "Clarté + amélioration de la similarité",
+        "Commandes": "Commandes",
         "Community": "Community",
         "Configuration": "Configuration",
+        "Configuration avancée": "Configuration avancée",
         "Créer un post Community": "Créer un post Community",
-        "Gestion": "Gestion"
+        "Description": "Description",
+        "Dupliquer": "Dupliquer",
+        "Equipement": "Equipement",
+        "Equipement non visible": "Equipement non visible",
+        "Equipement visible": "Equipement visible",
+        "Etat": "Etat",
+        "Gestion": "Gestion",
+        "Informations": "Informations",
+        "Nom": "Nom",
+        "Nom de l'équipement": "Nom de l'équipement",
+        "Objet parent": "Objet parent",
+        "Options": "Options",
+        "Paramètres TTS": "Paramètres TTS",
+        "Paramètres généraux": "Paramètres généraux",
+        "Rechercher": "Rechercher",
+        "Sauvegarder": "Sauvegarder",
+        "Stabilité": "Stabilité",
+        "Supprimer": "Supprimer",
+        "Tester": "Tester",
+        "Type": "Type",
+        "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix",
+        "Visible": "Visible",
+        "Voix": "Voix"
     },
     "plugins\/elevenlabs\/plugin_info\/configuration.php": {
         "Bonjour, je suis le texte de test.": "Bonjour, je suis le texte de test.",
+        "Texte de test": "Texte de test",
+        "Clarté + amélioration de la similarité": "Clarté + amélioration de la similarité",
         "Clé d'api elevenlabs": "Clé d'api elevenlabs",
         "Durée de vie du cache": "Durée de vie du cache",
+        "Durée durant laquelle les fichiers mp3 TTS non utilisés seront conservés": "Durée durant laquelle les fichiers mp3 TTS non utilisés seront conservés",
+        "Stabilité": "Stabilité",
         "Tester": "Tester",
         "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix",
         "Voix": "Voix"
     },
     "traduitjdm": {
-        "timestamp": "2023-09-30 00:00:00",
+        "timestamp": "2023-10-17 08:53:58",
         "version": "1.1.0"
     }
 }

@@ -309,7 +309,18 @@ class ElevenlabsCmd extends cmd {
     switch ($this->getLogicalId()) {
       case 'TTS': //LogicalId de la commande pour charger le TTS
         $eqlogic = $this->getEqLogic(); //Récupération de l’eqlogic
-        $text = $_options['message'];
+        $text = "";
+        if(!(!isset($_options['title']) || trim($_options['title'])==='')){
+          $text = $_options['title'] . " ";
+        }
+        if(!(!isset($_options['message']) || trim($_options['message'])==='')){
+          $text = $text.$_options['message'];
+        }
+        if(!isset($text) || trim($text)==='')
+        {
+          log::add('elevenlabs', 'error', 'title and message are empty');
+          return;
+        }
         log::add('elevenlabs', 'debug', 'text : '.  $text);
         $voice = $eqlogic->getConfiguration('voice');
         $clarity = $eqlogic->getConfiguration('clarity');

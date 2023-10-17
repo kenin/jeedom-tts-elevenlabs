@@ -54,7 +54,7 @@ $voices = Elevenlabs::getVoice();
 		</div>
 		<?php
 		if (count($eqLogics) == 0) {
-			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Template trouvé, cliquer sur "Ajouter" pour commencer}}</div>';
+			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement TTS trouvé, cliquer sur "Ajouter" pour commencer}}</div>';
 		} else {
 			// Champ de recherche
 			echo '<div class="input-group" style="margin:5px;">';
@@ -182,10 +182,16 @@ $voices = Elevenlabs::getVoice();
 									<div style="display: flex;
 											justify-content: space-around;
 											align-items: center;
-											flex-wrap: nowrap;">
+											flex-wrap: nowrap;margin-bottom:5px;">
 											<span>0 %</span> 
 										<input type="range" min="1" max="100" value="75" class="eqLogicAttr  form-control"  data-l1key="configuration"  data-l2key="clarity" style="width:80%" > <span>100%</span>
 									</div>
+								</div>
+							</div>
+							<div class="form-group">
+							<label class="col-sm-4 control-label">{{Texte de test}}</label>
+								<div class="col-sm-6">
+								<input type="text" class="eq-text-test form-control" value="{{Bonjour, je suis le texte de test.}}"  >					
 								</div>
 							</div>
 							<div class="form-group">
@@ -245,7 +251,8 @@ $voices = Elevenlabs::getVoice();
 		let voiceId = document.querySelector('.eqLogicAttr[data-l2key=voice]').value;		
 		let stability = document.querySelector('.eqLogicAttr[data-l2key=stability]').value;	
 		let clarity = document.querySelector('.eqLogicAttr[data-l2key=clarity]').value;
-		fetchFile("{{Bonjour, je suis le texte de test.}}",voiceId,stability,clarity).then((response) => {
+		let text = document.querySelector('.eq-text-test').value;
+		fetchFile(text,voiceId,stability,clarity).then((response) => {
 			var a = new Audio(response);
     		a.play();
 		})

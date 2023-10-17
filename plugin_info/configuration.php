@@ -75,10 +75,16 @@ if(isset($apiKey)){
 				<div style="display: flex;
 						justify-content: space-around;
 						align-items: center;
-						flex-wrap: nowrap;">
+						flex-wrap: nowrap;margin-bottom:5px;">
 						<span>0 %</span> 
 					<input type="range" min="1" max="100" value="75" class="configKey form-control" data-l1key="clarity" style="width:80%" > <span>100%</span>
 				</div>
+				</div>
+			</div>
+			<div class="form-group">
+			<label class="col-sm-4 control-label">{{Texte de test}}</label>
+				<div class="col-sm-6">
+				<input type="text" class="text-test form-control" value="{{Bonjour, je suis le texte de test.}}"  >					
 				</div>
 			</div>
 			<div class="form-group">
@@ -127,7 +133,8 @@ setTimeout(() =>{
 		let voiceId = document.querySelector('.adm_form .configKey[data-l1key=voice]').value;		
 		let stability = document.querySelector('.adm_form .configKey[data-l1key=stability]').value;	
 		let clarity = document.querySelector('.adm_form .configKey[data-l1key=clarity]').value;
-		fetchFile("{{Bonjour, je suis le texte de test.}}",voiceId,stability,clarity).then((response) => {
+		let text = document.querySelector('.text-test').value;
+		fetchFile(text,voiceId,stability,clarity).then((response) => {
 			var a = new Audio(response);
     		a.play();
 		})
