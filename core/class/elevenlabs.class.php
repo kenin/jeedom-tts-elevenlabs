@@ -32,10 +32,12 @@ class Elevenlabs extends eqLogic {
       log::add('elevenlabs', 'debug', 'voice :  ' .$voice);
 
       $file = Elevenlabs::getMp3($_text,$voice,$stability,$clarity,$model);
-      if(!Helpers::isNotNullOrEmpty($file)){
+      if(!Helpers::isNullOrEmpty($file)){
         $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
         log::add('elevenlabs', 'debug', 'copy' .$path. ' to '.$file);
         copy($path,$_filename);
+      }else{
+        log::add('elevenlabs', 'debug', 'no file generated');
       }
     } catch (Exception $e) {
       log::add('elevenlabs', 'error', 'exception tts : ' . $e->getMessage());
