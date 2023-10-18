@@ -31,7 +31,7 @@ class Elevenlabs extends eqLogic {
       log::add('elevenlabs', 'debug', 'input text : ' .$_text);      
       log::add('elevenlabs', 'debug', 'voice :  ' .$voice);
 
-      $file = ElevenlabsConstant::getMp3($_text,$voice,$stability,$clarity,$model);
+      $file = Elevenlabs::getMp3($_text,$voice,$stability,$clarity,$model);
       if(!Helpers::isNotNullOrEmpty($file)){
         $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
         log::add('elevenlabs', 'debug', 'copy' .$path. ' to '.$file);
@@ -77,7 +77,7 @@ class Elevenlabs extends eqLogic {
     if(!file_exists(ElevenlabsConstant::$MP3_SYSTEM_PATH)){
       mkdir (ElevenlabsConstant::$MP3_SYSTEM_PATH,0755,true);
     }
-    $filename = $voiceId.'_'.hash('md5',$stability.'_'.$similarity_boost.'_'.$model).'_'.hash('md5', $text).'.mp3';
+    $filename = $voiceId.'_'.hash('md5',$stability.'_'.$similarity_boost.'_'.$model.'_'.$text).'.mp3';
     $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.$filename;
 
     if(file_exists($path))
