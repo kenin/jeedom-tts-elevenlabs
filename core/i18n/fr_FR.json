@@ -32,6 +32,7 @@
         "Activer": "Activer",
         "Ajouter": "Ajouter",
         "Ajouter une commande": "Ajouter une commande",
+        "Veuillez choisir une voix" : "Veuillez choisir une voix",
         "Aucun": "Aucun",
         "Aucun équipement TTS trouvé, cliquer sur \"Ajouter\" pour commencer": "Aucun équipement TTS trouvé, cliquer sur \"Ajouter\" pour commencer",
         "Bonjour, je suis le texte de test.": "Bonjour, je suis le texte de test.",
@@ -66,11 +67,15 @@
         "Type": "Type",
         "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix",
         "Visible": "Visible",
-        "Voix": "Voix"
+        "Voix": "Voix",
+        "Modèle": "Modèle",
+        "La voix sera de meilleur qualité avec le modèle" : "La voix sera de meilleur qualité avec le modèle"
     },
     "plugins\/elevenlabs\/plugin_info\/configuration.php": {
         "Bonjour, je suis le texte de test.": "Bonjour, je suis le texte de test.",
         "Texte de test": "Texte de test",
+        "Modèle": "Modèle",
+        "Veuillez choisir une voix" : "Veuillez choisir une voix",
         "Clarté + amélioration de la similarité": "Clarté + amélioration de la similarité",
         "Clé d'api elevenlabs": "Clé d'api elevenlabs",
         "Durée de vie du cache": "Durée de vie du cache",
@@ -78,7 +83,8 @@
         "Stabilité": "Stabilité",
         "Tester": "Tester",
         "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix",
-        "Voix": "Voix"
+        "Voix": "Voix",
+        "La voix sera de meilleur qualité avec le modèle" : "La voix sera de meilleur qualité avec le modèle"
     },
     "traduitjdm": {
         "timestamp": "2023-10-17 08:53:58",

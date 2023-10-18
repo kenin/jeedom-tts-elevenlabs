@@ -27,10 +27,11 @@ class Elevenlabs extends eqLogic {
       $voice = config::byKey("voice","elevenlabs");
       $clarity = config::byKey("clarity","elevenlabs",0.5);
       $stability = config::byKey("stability","elevenlabs",0.75);
+      $model = config::byKey("model","elevenlabs",ElevenlabsConstant::$DEFAULT_MODEL);
       log::add('elevenlabs', 'debug', 'input text : ' .$_text);      
       log::add('elevenlabs', 'debug', 'voice :  ' .$voice);
 
-      $file = ElevenlabsConstant::getMp3($_text,$voice,$stability,$clarity);
+      $file = ElevenlabsConstant::getMp3($_text,$voice,$stability,$clarity,$model);
       if(!Helpers::isNotNullOrEmpty($file)){
         $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
         log::add('elevenlabs', 'debug', 'copy' .$path. ' to '.$file);
@@ -61,7 +62,7 @@ class Elevenlabs extends eqLogic {
       return json_decode($result);
   }
   
-  public static function getMp3($text,$voiceId,$stability = 0.5,$similarity_boost =0.75)
+  public static function getMp3($text,$voiceId,$stability = 0.5,$similarity_boost =0.75,$model = "eleven_multilingual_v2")
   {
     $apiKey = config::byKey("apiKey","elevenlabs");
     if(Helpers::isNullOrEmpty($apiKey)){
@@ -76,7 +77,7 @@ class Elevenlabs extends eqLogic {
     if(!file_exists(ElevenlabsConstant::$MP3_SYSTEM_PATH)){
       mkdir (ElevenlabsConstant::$MP3_SYSTEM_PATH,0755,true);
     }
-    $filename = $voiceId.'_'.$stability.'_'.$similarity_boost.'_'.hash('md5', $text).'.mp3';
+    $filename = $voiceId.'_'.hash('md5',$stability.'_'.$similarity_boost.'_'.$model).'_'.hash('md5', $text).'.mp3';
     $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.$filename;
 
     if(file_exists($path))
@@ -98,10 +99,11 @@ class Elevenlabs extends eqLogic {
     ));
     $post_data = array(				
       'text' => $text,
-      'model_id' => "eleven_multilingual_v1",
+      'model_id' => $model,
       'stability' => $stability,
       'similarity_boost' => $similarity_boost
     );
+    log::add('elevenlabs', 'debug', 'query parameter : ' .json_encode($post_data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     
     curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode($post_data) );
@@ -325,8 +327,10 @@ class ElevenlabsCmd extends cmd {
         $voice = $eqlogic->getConfiguration('voice');
         $clarity = $eqlogic->getConfiguration('clarity');
         $stability = $eqlogic->getConfiguration('stability');   
+        $stability = $eqlogic->getConfiguration('stability');  
+        $model = $eqlogic->getConfiguration('model',ElevenlabsConstant::$DEFAULT_MODEL);    
         try{ 
-        $file = $eqlogic->getMp3($text,$voice,$stability,$clarity);
+        $file = $eqlogic->getMp3($text,$voice,$stability,$clarity,$model);
           if(!(!isset($file) || trim($file)===''))
           {
             $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);

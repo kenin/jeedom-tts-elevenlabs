@@ -8,6 +8,7 @@ $plugin = plugin::byId('elevenlabs');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 $voices = Elevenlabs::getVoice();
+$models = ElevenlabsConstant::$MODELS;
 ?>
 
 
@@ -156,10 +157,10 @@ $voices = Elevenlabs::getVoice();
 								<label class="col-sm-4 control-label"> {{Voix}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix}}"></i></sup></label>
 								<div class="col-sm-6">
 									<select class="eqLogicAttr  form-control"   data-l1key="configuration" data-l2key="voice" >
-									<option>Veuillez choisir une voix</option>
+									<option>{{Veuillez choisir une voix}}</option>
 									<?php
 									foreach($voices->voices as $voice){
-										echo '<option value="'.$voice->voice_id.'">'.$voice->name.' ('.$voice->labels->gender.', '.$voice->labels->age.')</option>';
+										echo '<option data-best-model="'.implode(',',$voice->high_quality_base_model_ids).'" value="'.$voice->voice_id.'">'.$voice->name.' ('.$voice->labels->gender.', '.$voice->labels->age.')</option>';
 									}
 									?>
 									</select>
@@ -192,6 +193,24 @@ $voices = Elevenlabs::getVoice();
 							<label class="col-sm-4 control-label">{{Texte de test}}</label>
 								<div class="col-sm-6">
 								<input type="text" class="eq-text-test form-control" value="{{Bonjour, je suis le texte de test.}}"  >					
+								</div>
+							</div>
+							<div class="form-group">
+							<label class="col-sm-4 control-label">{{Modèle}}</label>
+								<div class="col-sm-6">
+								<select class="eqLogicAttr form-control" id="model_adm_select" data-l1key="configuration" data-l2key="model" >               
+									<?php
+										foreach($models as $model){ 
+											echo '<option value="'.$model.'">'.$model.'</option>';
+										}
+									?>
+									</select>		
+								</div>
+							</div>
+							<div class="form-group" id="best-label-group">
+								<label class="col-sm-4 control-label"></label>
+								<div class="col-sm-6" >
+									<span id="best_label"></span>
 								</div>
 							</div>
 							<div class="form-group">
@@ -252,7 +271,8 @@ $voices = Elevenlabs::getVoice();
 		let stability = document.querySelector('.eqLogicAttr[data-l2key=stability]').value;	
 		let clarity = document.querySelector('.eqLogicAttr[data-l2key=clarity]').value;
 		let text = document.querySelector('.eq-text-test').value;
-		fetchFile(text,voiceId,stability,clarity).then((response) => {
+		let model = document.querySelector('.eqLogicAttr[data-l2key=model]').value;
+		fetchFile(text,voiceId,stability,clarity,model).then((response) => {
 			var a = new Audio(response);
     		a.play();
 		})
@@ -260,7 +280,24 @@ $voices = Elevenlabs::getVoice();
 			console.error(error);
 		});
 	},true);
-	async function fetchFile(word,voiceId,stability,clarity){
+
+	document.querySelector(".eqLogicAttr[data-l2key=voice]").addEventListener("change",function(e){
+
+    	toggleBestLabel();
+	},true);
+
+async function toggleBestLabel(){
+		let select = document.querySelector('.eqLogicAttr[data-l2key=voice]');
+		let selectValue = select.value;
+		let bestModel = select.options[select.selectedIndex].dataset.bestModel;
+		if(bestModel != null && bestModel != ""){
+			document.querySelector("#best-label-group").style.display = "block";
+			document.querySelector('#best_label').innerText  = "{{La voix sera de meilleur qualité avec le modèle : }}"+bestModel;
+		}else{
+			document.querySelector("#best-label-group").style.display = "none";
+		}
+}
+	async function fetchFile(word,voiceId,stability,clarity,model){
 		const formData  = new URLSearchParams();
 		
 
@@ -269,6 +306,7 @@ $voices = Elevenlabs::getVoice();
 		formData.append('voiceId', voiceId);
 		formData.append('stability', stability);
 		formData.append('clarity', clarity);
+		formData.append('model', model);
 		const requestOptions = {
 		method: 'POST',
 		body: formData,

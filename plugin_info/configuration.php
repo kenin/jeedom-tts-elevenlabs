@@ -29,6 +29,8 @@ $apiKey = config::byKey('apiKey', 'elevenlabs');
 if(isset($apiKey)){
  $voices = Elevenlabs::getVoice();
 }
+$models = ElevenlabsConstant::$MODELS;
+
 ?>
 <form class="form-horizontal adm_form">
   <fieldset>
@@ -48,10 +50,10 @@ if(isset($apiKey)){
 				<label class="col-sm-4 control-label"> {{Voix}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix}}"></i></sup></label>
 				<div class="col-sm-6">
 					<select class="configKey form-control" id="voice_adm_select" data-l1key="voice" disabled >
-                    <option>Veuillez choisir une voix</option>
+                    <option>{{Veuillez choisir une voix}}</option>
                     <?php
-                    foreach($voices->voices as $voice){
-						echo '<option value="'.$voice->voice_id.'">'.$voice->name.' ('.$voice->labels->gender.', '.$voice->labels->age.')</option>';
+                    foreach($voices->voices as $voice){ 
+						echo '<option data-best-model="'.implode(',',$voice->high_quality_base_model_ids).'" value="'.$voice->voice_id.'">'.$voice->name.' ('.$voice->labels->gender.', '.$voice->labels->age.')</option>';
 					}
 					?>
 					</select>
@@ -84,15 +86,34 @@ if(isset($apiKey)){
 			<div class="form-group">
 			<label class="col-sm-4 control-label">{{Texte de test}}</label>
 				<div class="col-sm-6">
-				<input type="text" class="text-test form-control" value="{{Bonjour, je suis le texte de test.}}"  >					
+					<input type="text" class="text-test form-control" value="{{Bonjour, je suis le texte de test.}}"  >					
 				</div>
 			</div>
 			<div class="form-group">
+			<label class="col-sm-4 control-label">{{Modèle}}</label>
+				<div class="col-sm-6">
+				<select class="configKey form-control" id="model_adm_select" data-l1key="model" >               
+                    <?php
+						foreach($models as $model){ 
+							echo '<option value="'.$model.'">'.$model.'</option>';
+						}
+					?>
+					</select>		
+				</div>
+			</div>
+			<div class="form-group" id="adm-best-label-group">
+				<label class="col-sm-4 control-label"></label>
+				<div class="col-sm-6" >
+                    <span id="adm-best_label"></span>
+				</div>
+			</div>
+			<div class="form-group" >
 				<label class="col-sm-4 control-label"></label>
 				<div class="col-sm-6">
                     <a id="btn_adm_test" >{{Tester}}</a>
 				</div>
 			</div>
+		
 			<div class="row">
 				<h4 class="col-sm-4 col-sm-offset-2">Cache</h4>
 			</div>
@@ -134,7 +155,8 @@ setTimeout(() =>{
 		let stability = document.querySelector('.adm_form .configKey[data-l1key=stability]').value;	
 		let clarity = document.querySelector('.adm_form .configKey[data-l1key=clarity]').value;
 		let text = document.querySelector('.text-test').value;
-		fetchFile(text,voiceId,stability,clarity).then((response) => {
+		let model = document.querySelector('.adm_form .configKey[data-l1key=model]').value;	
+		fetchFile(text,voiceId,stability,clarity,model).then((response) => {
 			var a = new Audio(response);
     		a.play();
 		})
@@ -143,9 +165,26 @@ setTimeout(() =>{
 		});
 	},true);
 
+	document.querySelector(".adm_form .configKey[data-l1key=voice]").addEventListener("change",function(e){
+    	toggleBestLabel();
+	},true);
 
+	toggleBestLabel();
 },1000);
-async function fetchFile(word,voiceId,stability,clarity){
+
+async function toggleBestLabel(){
+	let select = document.querySelector('.adm_form .configKey[data-l1key=voice]');
+		let selectValue = select.value;
+		let bestModel = select.options[select.selectedIndex].dataset.bestModel;
+		if(bestModel != null && bestModel != ""){
+			document.querySelector("#adm-best-label-group").style.display = "block";
+			document.querySelector('#adm-best_label').innerText  = "{{La voix sera de meilleur qualité avec le modèle}} : "+bestModel;
+		}else{
+			document.querySelector("#adm-best-label-group").style.display = "none";
+		}
+}
+
+async function fetchFile(word,voiceId,stability,clarity,model){
 	const formData  = new URLSearchParams();
       
 
@@ -154,6 +193,7 @@ async function fetchFile(word,voiceId,stability,clarity){
 	formData.append('voiceId', voiceId);
 	formData.append('stability', stability);
 	formData.append('clarity', clarity);
+	formData.append('model', model);
 	const requestOptions = {
     method: 'POST',
     body: formData,

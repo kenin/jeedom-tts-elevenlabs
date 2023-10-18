@@ -36,7 +36,7 @@ try {
    if (init('action') == 'getSample') {
       //ajax::success("lool");
     
-      $file = Elevenlabs::getMp3(init('text'),init('voiceId'),init('stability') / 100,init('clarity') / 100 );
+      $file = Elevenlabs::getMp3(init('text'),init('voiceId'),init('stability') / 100,init('clarity') / 100,init('model') );
       ajax::success($file);
    }
     // }else if (init('action') == 'save') {

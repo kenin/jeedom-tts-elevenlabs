@@ -41,6 +41,7 @@
             "Hello, I'm following the test text."
         ],
         "Catégorie": "Category",
+        "Veuillez choisir une voix" : "Please select a voice",
         "Ce plugin n\\'utilise pas d\\'équipement": "This plugin does not use any equipment",
         "Clarté + amélioration de la similarité": "Clarity + Similarity Enhancement",
         "Commandes": "Commands",
@@ -76,19 +77,23 @@
         "Visible": "Visible",
         "Voix": [
             "Voice"
-        ]
+        ],
+        "Modèle": "Model",
+        "La voix sera de meilleur qualité avec le modèle" : "Voice quality will be better with the following model"
     },
     "plugins\/elevenlabs\/plugin_info\/configuration.php": {
         "Texte de test": "Test text",
         "Bonjour, je suis le texte de test.": "Hello, I'm following the test text.",
         "Clarté + amélioration de la similarité": "Clarity + Similarity Enhancement",
+        "Veuillez choisir une voix" : "Please select a voice",
         "Clé d'api elevenlabs": "Elevenlabs api key",
         "Durée de vie du cache": "Cache lifetime",
         "Durée durant laquelle les fichiers mp3 TTS non utilisés seront conservés": "Length of time unused TTS mp3 files will be retained",
         "Stabilité": "Stability",
         "Tester": "Test",
         "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Please save the api key before selecting the voice.",
-        "Voix": "Voice"
+        "Voix": "Voice",
+        "Modèle": "Model"
     },
     "traduitjdm": {
         "timestamp": "2023-10-17 08:53:58",
