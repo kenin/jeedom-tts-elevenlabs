@@ -216,7 +216,7 @@ $models = ElevenlabsConstant::$MODELS;
 							<div class="form-group">
 								<label class="col-sm-4 control-label"></label>
 								<div class="col-sm-6">
-									<a id="btn_test" >{{Tester}}</a>
+									<a id="btn_test" class="btn btn-xs btn-primary" ><i class="fas fa-play"></i> {{Tester}}</a>
 								</div>
 							</div>
 						</div>
