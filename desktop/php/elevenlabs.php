@@ -8,19 +8,19 @@ $plugin = plugin::byId('elevenlabs');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 $voices = Elevenlabs::getVoice();
-$models = ElevenlabsConstant::$MODELS;
+$models = Elevenlabs::getModels();
 ?>
 
 
 <div class="row row-overflow">
 	<!-- Page d'accueil du plugin -->
 	<div class="col-xs-12 eqLogicThumbnailDisplay">
-	<div class="row">
+		<div class="row">
 			<div class="col-sm-10">
 				<legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
 				<!-- Boutons de gestion du plugin -->
 				<div class="eqLogicThumbnailContainer">
-				<div class="cursor eqLogicAction logoPrimary" data-action="add">
+					<div class="cursor eqLogicAction logoPrimary" data-action="add">
 						<i class="fas fa-plus-circle"></i>
 						<br>
 						<span>{{Ajouter}}</span>
@@ -82,8 +82,8 @@ $models = ElevenlabsConstant::$MODELS;
 		}
 		?>
 	</div> <!-- /.eqLogicThumbnailDisplay -->
-<!-- Page de présentation de l'équipement -->
-<div class="col-xs-12 eqLogic" style="display: none;">
+	<!-- Page de présentation de l'équipement -->
+	<div class="col-xs-12 eqLogic" style="display: none;">
 		<!-- barre de gestion de l'équipement -->
 		<div class="input-group pull-right" style="display:inline-flex;">
 			<span class="input-group-btn">
@@ -156,16 +156,16 @@ $models = ElevenlabsConstant::$MODELS;
 							<div class="form-group">
 								<label class="col-sm-4 control-label"> {{Voix}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix}}"></i></sup></label>
 								<div class="col-sm-6">
-									<select class="eqLogicAttr  form-control"   data-l1key="configuration" data-l2key="voice" >
-									<option>{{Veuillez choisir une voix}}</option>
-									<?php
-									foreach($voices->voices as $voice){
-										echo '<option data-best-model="'.implode(',',$voice->high_quality_base_model_ids).'" value="'.$voice->voice_id.'">'.$voice->name.' ('.$voice->labels->gender.', '.$voice->labels->age.')</option>';
-									}
-									?>
+									<select class="eqLogicAttr  form-control" data-l1key="configuration" data-l2key="voice">
+										<option>{{Veuillez choisir une voix}}</option>
+										<?php
+										foreach ($voices->voices as $voice) {
+											echo '<option data-best-model="' . implode(',', $voice->high_quality_base_model_ids) . '" value="' . $voice->voice_id . '">' . $voice->name . ' (' . $voice->labels->gender . ', ' . $voice->labels->age . ')</option>';
+										}
+										?>
 									</select>
 								</div>
-							</div>		
+							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Stabilité}}</label>
 								<div class="col-sm-6">
@@ -173,7 +173,7 @@ $models = ElevenlabsConstant::$MODELS;
 										justify-content: space-around;
 										align-items: center;
 										flex-wrap: nowrap;margin-bottom:5px;">
-									<span>0 %</span> <input type="range" min="1" max="100" value="50" class="eqLogicAttr  form-control"  data-l1key="configuration"  data-l2key="stability" style="width:80%"> <span>100%</span>
+										<span>0 %</span> <input type="range" min="1" max="100" value="50" class="eqLogicAttr  form-control" data-l1key="configuration" data-l2key="stability" style="width:80%"> <span>100%</span>
 									</div>
 								</div>
 							</div>
@@ -184,39 +184,57 @@ $models = ElevenlabsConstant::$MODELS;
 											justify-content: space-around;
 											align-items: center;
 											flex-wrap: nowrap;margin-bottom:5px;">
-											<span>0 %</span> 
-										<input type="range" min="1" max="100" value="75" class="eqLogicAttr  form-control"  data-l1key="configuration"  data-l2key="clarity" style="width:80%" > <span>100%</span>
+										<span>0 %</span>
+										<input type="range" min="1" max="100" value="75" class="eqLogicAttr  form-control" data-l1key="configuration" data-l2key="clarity" style="width:80%"> <span>100%</span>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-							<label class="col-sm-4 control-label">{{Texte de test}}</label>
+								<label class="col-sm-4 control-label">{{Texte de test}}</label>
 								<div class="col-sm-6">
-								<input type="text" class="eq-text-test form-control" value="{{Bonjour, je suis le texte de test.}}"  >					
+									<input type="text" class="eq-text-test form-control" value="{{Bonjour, je suis le texte de test.}}">
 								</div>
 							</div>
 							<div class="form-group">
-							<label class="col-sm-4 control-label">{{Modèle}}</label>
+								<label class="col-sm-4 control-label">{{Modèle}}</label>
 								<div class="col-sm-6">
-								<select class="eqLogicAttr form-control" id="model_adm_select" data-l1key="configuration" data-l2key="model" >               
-									<?php
-										foreach($models as $model){ 
-											echo '<option value="'.$model.'">'.$model.'</option>';
+									<select class="eqLogicAttr form-control" id="model_adm_select" data-l1key="configuration" data-l2key="model">
+										<?php
+										foreach ($models as $model) {
+											if ($model->can_do_text_to_speech) {
+												echo '<option value="' . $model->model_id . '">' . $model->name . '</option>';
+											}
 										}
-									?>
-									</select>		
+										?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group lang-group" style="display:none">
+								<label class="col-sm-4 control-label">{{Langue}}</label>
+								<div class="col-sm-6">
+									<select class="eqLogicAttr configKey form-control" id="language_adm_select" data-l1key="configuration" data-l2key="language">
+										<?php
+										foreach ($models as $model) {
+											if ($model->model_id == "eleven_turbo_v2_5") {
+												foreach ($model->languages as $language) {
+													echo '<option value="' . $language->language_id . '">' . $language->name . '</option>';
+												}
+											}
+										}
+										?>
+									</select>
 								</div>
 							</div>
 							<div class="form-group" id="best-label-group">
 								<label class="col-sm-4 control-label"></label>
-								<div class="col-sm-6" >
+								<div class="col-sm-6">
 									<span id="best_label"></span>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label"></label>
 								<div class="col-sm-6">
-									<a id="btn_test" class="btn btn-xs btn-primary" ><i class="fas fa-play"></i> {{Tester}}</a>
+									<a id="btn_test" class="btn btn-xs btn-primary"><i class="fas fa-play"></i> {{Tester}}</a>
 								</div>
 							</div>
 						</div>
@@ -261,45 +279,62 @@ $models = ElevenlabsConstant::$MODELS;
 		</div><!-- /.tab-content -->
 
 
-	
+
 	</div><!-- /.eqLogic -->
 </div><!-- /.row row-overflow -->
 <script>
-	document.querySelector("#btn_test").addEventListener("click",function(e){
-    	e.preventDefault();
-		let voiceId = document.querySelector('.eqLogicAttr[data-l2key=voice]').value;		
-		let stability = document.querySelector('.eqLogicAttr[data-l2key=stability]').value;	
+	setTimeout(() => {
+		if (document.querySelector('.eqLogicAttr[data-l2key=model]').value == "eleven_turbo_v2_5") {
+			document.querySelector(".lang-group").style.display = "block";
+		}
+	}, 1000);
+	document.querySelector("#btn_test").addEventListener("click", function(e) {
+		e.preventDefault();
+		let voiceId = document.querySelector('.eqLogicAttr[data-l2key=voice]').value;
+		let stability = document.querySelector('.eqLogicAttr[data-l2key=stability]').value;
 		let clarity = document.querySelector('.eqLogicAttr[data-l2key=clarity]').value;
 		let text = document.querySelector('.eq-text-test').value;
 		let model = document.querySelector('.eqLogicAttr[data-l2key=model]').value;
-		fetchFile(text,voiceId,stability,clarity,model).then((response) => {
-			var a = new Audio(response);
-    		a.play();
-		})
-		.catch((error) => {
-			console.error(error);
-		});
-	},true);
+		let language = document.querySelector('.eqLogicAttr[data-l2key=language]').value;
+		fetchFile(text, voiceId, stability, clarity, model,language).then((response) => {
+				var a = new Audio(response);
+				a.play();
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}, true);
 
-	document.querySelector(".eqLogicAttr[data-l2key=voice]").addEventListener("change",function(e){
+	document.querySelector(".eqLogicAttr[data-l2key=voice]").addEventListener("change", function(e) {
+		toggleEqBestLabel();
+	}, true);
 
-    	toggleBestLabel();
-	},true);
+	document.querySelector(".eqLogicAttr[data-l2key=model]").addEventListener("change", function(e) {
+		if (e.target.value == "eleven_turbo_v2_5") {
+			document.querySelector(".lang-group").style.display = "block";
+		} else {
+			document.querySelector(".lang-group").style.display = "none";
+		}
+	}, true);
 
-async function toggleBestLabel(){
+	async function toggleEqBestLabel() {
 		let select = document.querySelector('.eqLogicAttr[data-l2key=voice]');
 		let selectValue = select.value;
-		let bestModel = select.options[select.selectedIndex].dataset.bestModel;
-		if(bestModel != null && bestModel != ""){
-			document.querySelector("#best-label-group").style.display = "block";
-			document.querySelector('#best_label').innerText  = "{{La voix sera de meilleur qualité avec le modèle : }}"+bestModel;
-		}else{
-			document.querySelector("#best-label-group").style.display = "none";
+		if(select.options[select.selectedIndex] != null && select.options[select.selectedIndex].dataset != null){
+			let bestModel = select.options[select.selectedIndex].dataset.bestModel;
+			if (bestModel != null && bestModel != "") {
+				document.querySelector("#best-label-group").style.display = "block";
+				document.querySelector('#best_label').innerText = "{{La voix sera de meilleur qualité avec le modèle : }}" + bestModel;
+				return;
+			} 
 		}
-}
-	async function fetchFile(word,voiceId,stability,clarity,model){
-		const formData  = new URLSearchParams();
-		
+
+		document.querySelector("#best-label-group").style.display = "none";
+	
+	}
+	async function fetchFile(word, voiceId, stability, clarity, model, language) {
+		const formData = new URLSearchParams();
+
 
 		formData.append('action', 'getSample');
 		formData.append('text', word);
@@ -307,21 +342,20 @@ async function toggleBestLabel(){
 		formData.append('stability', stability);
 		formData.append('clarity', clarity);
 		formData.append('model', model);
+		formData.append('language', language);
 		const requestOptions = {
-		method: 'POST',
-		body: formData,
-		headers: {
-		"accept": "application/json",
-		},
-	};
-		var result = await fetch('plugins/elevenlabs/core/ajax/elevenlabs.ajax.php',requestOptions);
-		var json = await result.json();                                                      
-		console.log(json);
+			method: 'POST',
+			body: formData,
+			headers: {
+				"accept": "application/json",
+			},
+		};
+		var result = await fetch('plugins/elevenlabs/core/ajax/elevenlabs.ajax.php', requestOptions);
+		var json = await result.json();
 		return json.result;
 	}
-
 </script>
 <!-- Inclusion du fichier javascript du plugin (dossier, nom_du_fichier, extension_du_fichier, id_du_plugin) -->
-<?php include_file('desktop', 'template', 'js', 'elevenlabs');?>
+<?php include_file('desktop', 'template', 'js', 'elevenlabs'); ?>
 <!-- Inclusion du fichier javascript du core - NE PAS MODIFIER NI SUPPRIMER -->
-<?php include_file('core', 'plugin.template', 'js');?>
+<?php include_file('core', 'plugin.template', 'js'); ?>

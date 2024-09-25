@@ -3,6 +3,10 @@
 >**IMPORTANT**
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
+# 26/09/2024
+- Correction d'un souci de timeout sur la génération du mp3
+- Ajout de la récupération des modèles automatiquement. (Permet d'utiliser les nouveaux modèles turbo)
+- Ajout de la sélection de la langue pour le modèle turbo 2.5
 # 19/10/2023
 - Ajout de la sélection du modèle
 # 17/10/2023

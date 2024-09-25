@@ -79,7 +79,8 @@
             "Voice"
         ],
         "Modèle": "Model",
-        "La voix sera de meilleur qualité avec le modèle" : "Voice quality will be better with the following model"
+        "La voix sera de meilleur qualité avec le modèle" : "Voice quality will be better with the following model",
+        "Langue": "Language"
     },
     "plugins\/elevenlabs\/plugin_info\/configuration.php": {
         "Texte de test": "Test text",
@@ -93,7 +94,8 @@
         "Tester": "Test",
         "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Please save the api key before selecting the voice.",
         "Voix": "Voice",
-        "Modèle": "Model"
+        "Modèle": "Model",
+        "Langue": "Language"
     },
     "traduitjdm": {
         "timestamp": "2023-10-17 08:53:58",

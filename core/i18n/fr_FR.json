@@ -69,7 +69,8 @@
         "Visible": "Visible",
         "Voix": "Voix",
         "Modèle": "Modèle",
-        "La voix sera de meilleur qualité avec le modèle" : "La voix sera de meilleur qualité avec le modèle"
+        "La voix sera de meilleur qualité avec le modèle" : "La voix sera de meilleur qualité avec le modèle",
+        "Langue": "Langue"
     },
     "plugins\/elevenlabs\/plugin_info\/configuration.php": {
         "Bonjour, je suis le texte de test.": "Bonjour, je suis le texte de test.",
@@ -84,7 +85,8 @@
         "Tester": "Tester",
         "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix": "Veuillez sauvegarder la clé d'api avant de pouvoir choisir la voix",
         "Voix": "Voix",
-        "La voix sera de meilleur qualité avec le modèle" : "La voix sera de meilleur qualité avec le modèle"
+        "La voix sera de meilleur qualité avec le modèle" : "La voix sera de meilleur qualité avec le modèle",
+        "Langue": "Langue"
     },
     "traduitjdm": {
         "timestamp": "2023-10-17 08:53:58",

@@ -28,10 +28,11 @@ class Elevenlabs extends eqLogic {
       $clarity = config::byKey("clarity","elevenlabs",0.5);
       $stability = config::byKey("stability","elevenlabs",0.75);
       $model = config::byKey("model","elevenlabs",ElevenlabsConstant::$DEFAULT_MODEL);
+      $language = config::byKey("language","elevenlabs","fr");
       log::add('elevenlabs', 'debug', 'input text : ' .$_text);      
       log::add('elevenlabs', 'debug', 'voice :  ' .$voice);
 
-      $file = Elevenlabs::getMp3($_text,$voice,$stability,$clarity,$model);
+      $file = Elevenlabs::getMp3($_text,$voice,$stability,$clarity,$model,$language);
       if(!Helpers::isNullOrEmpty($file)){
         $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
         log::add('elevenlabs', 'debug', 'copy' .$path. ' to '.$file);
@@ -63,8 +64,27 @@ class Elevenlabs extends eqLogic {
       //todo gerer erreur
       return json_decode($result);
   }
+
+  public static function getModels() {
+    
+    $apiKey = config::byKey("apiKey","elevenlabs");
+    $url = ElevenlabsConstant::$BASEAPI_URL.ElevenlabsConstant::$MODELS_API;   
+    //query a get request to elevenlabs with curl
+    $ch = curl_init();     
+    curl_setopt($ch, CURLOPT_URL, $url);
+    //add xi api to header
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'xi-api-key: '.$apiKey,
+      'accept: application/json'
+    ));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    $result = curl_exec($ch);
+    curl_close($ch);
+    //todo gerer erreur
+    return json_decode($result);
+}
   
-  public static function getMp3($text,$voiceId,$stability = 0.5,$similarity_boost =0.75,$model = "eleven_multilingual_v2")
+  public static function getMp3($text,$voiceId,$stability = 0.5,$similarity_boost =0.75,$model = "eleven_multilingual_v2",$language = "fr")
   {
     $apiKey = config::byKey("apiKey","elevenlabs");
     if(Helpers::isNullOrEmpty($apiKey)){
@@ -79,7 +99,8 @@ class Elevenlabs extends eqLogic {
     if(!file_exists(ElevenlabsConstant::$MP3_SYSTEM_PATH)){
       mkdir (ElevenlabsConstant::$MP3_SYSTEM_PATH,0755,true);
     }
-    $filename = $voiceId.'_'.hash('md5',$stability.'_'.$similarity_boost.'_'.$model.'_'.$text).'.mp3';
+    log::add('elevenlabs', 'debug', 'language : ' .$language);
+    $filename = $voiceId.'_'.hash('md5',$stability.'_'.$similarity_boost.'_'.$model.'_'.$language.'_'.$text).'.mp3';
     $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.$filename;
 
     if(file_exists($path))
@@ -106,6 +127,9 @@ class Elevenlabs extends eqLogic {
       'stability' => $stability,
       'similarity_boost' => $similarity_boost
     );
+    if($model == "eleven_turbo_v2_5" && !empty($language)){
+      $post_data['language_code'] = $language;
+    }
     log::add('elevenlabs', 'debug', 'query parameter : ' .json_encode($post_data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     
@@ -331,9 +355,10 @@ class ElevenlabsCmd extends cmd {
         $clarity = $eqlogic->getConfiguration('clarity');
         $stability = $eqlogic->getConfiguration('stability');   
         $stability = $eqlogic->getConfiguration('stability');  
-        $model = $eqlogic->getConfiguration('model',ElevenlabsConstant::$DEFAULT_MODEL);    
+        $model = $eqlogic->getConfiguration('model',ElevenlabsConstant::$DEFAULT_MODEL);  
+        $language = $eqlogic->getConfiguration('language',"fr");  
         try{ 
-        $file = $eqlogic->getMp3($text,$voice,$stability,$clarity,$model);
+        $file = $eqlogic->getMp3($text,$voice,$stability,$clarity,$model,$language);
           if(!(!isset($file) || trim($file)===''))
           {
             $path = ElevenlabsConstant::$MP3_SYSTEM_PATH.basename($file);
