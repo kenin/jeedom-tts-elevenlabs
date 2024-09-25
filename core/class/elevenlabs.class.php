@@ -93,7 +93,8 @@ class Elevenlabs extends eqLogic {
     $ch = curl_init(ElevenlabsConstant::$BASEAPI_URL.ElevenlabsConstant::$TTS_API.$voiceId);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_NOBODY, 0);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0); 
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60); //timeout in seconds
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
       'xi-api-key: '.$apiKey,
       'accept: audio/mpeg',
